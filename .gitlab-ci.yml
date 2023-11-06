@@ -4,7 +4,7 @@ stages: # List of stages for jobs, and their order of execution
 
 build-nextcloud-news:
   stage: build
-  image: python
+  image: python:3.11-bookworm
   environment: production
   before_script:
     - apt install zip
