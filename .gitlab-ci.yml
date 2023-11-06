@@ -6,6 +6,8 @@ build-nextcloud-news:
   stage: build
   image: python
   environment: production
+  before_script:
+    - apt install zip
   script:
     - pip install -r nextcloud_news_filter/requirements.txt --target ./nextcloud_news_filter/package
     - zip -r nextcloud_news_filter.zip nextcloud_news_filter/
@@ -20,4 +22,4 @@ deploy-nextcloud-news-filter: # This job runs in the deploy stage.
   needs:
     - build-nextcloud-news
   script:
-    - scw function deploy name=nextcloud_news_filter namespace-id=ns-elegant-thompson runtime=python310 zip-file=./nextcloud_news_filter.zip
+    - scw function deploy name=nextcloud_news_filter namespace-id=ns-elegant-thompson runtime=python311 zip-file=./nextcloud_news_filter.zip
