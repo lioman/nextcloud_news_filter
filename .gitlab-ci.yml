@@ -1,0 +1,23 @@
+stages: # List of stages for jobs, and their order of execution
+  - build
+  - deploy
+
+build-nextcloud-news:
+  stage: build
+  image: python
+  environment: production
+  script:
+    - pip install -r nextcloud_news_filter/requirements.txt --target ./nextcloud_news_filter/package
+    - zip -r nextcloud_news_filter.zip nextcloud_news_filter/
+  artifacts:
+    paths:
+      - ./nextcloud_news_filter.zip
+
+deploy-nextcloud-news-filter: # This job runs in the deploy stage.
+  stage: deploy # It only runs when *both* jobs in the test stage complete successfully.
+  image: scaleway/cli:2.24
+  environment: production
+  needs:
+    - build-nextcloud-news
+  script:
+    - scw function deploy name=nextcloud_news_filter namespace-id=ns-elegant-thompson runtime=python310 zip-file=./nextcloud_news_filter.zip

@@ -1,0 +1,41 @@
+[
+  {
+    "name": "heise+",
+    "feedId": 1592,
+    "titleRegex": "(heise\\+)|(heise\\-Angebot)"
+  },
+  {
+    "name": "g+",
+    "feedId": 1594,
+    "titleRegex": "\\(g\\+\\)"
+  },
+  {
+    "name": "mobiflip > 21 Days",
+    "feedId": 1595,
+    "hoursAge": 504
+  },
+  {
+    "name": "googlewatchblog > 21 Days",
+    "feedId": 1596,
+    "hoursAge": 504
+  },
+  {
+    "name": "Zeit > 5 Tage",
+    "feedId": 1671,
+    "hoursAge": 120
+  },
+  {
+    "name": "Golem > 30 Tage",
+    "feedId": 1594,
+    "hoursAge": 600
+  },
+  {
+    "name": "heise > 30 Tage",
+    "feedId": 1592,
+    "hoursAge": 600
+  },
+  {
+    "name": "Bad Topic Title",
+    "titleRegex": "((.)*[Aa]ir[pP]ods|(.)*Apple Watch|(.*)iPhone 15)"
+  }
+]
