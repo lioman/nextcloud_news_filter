@@ -4,7 +4,10 @@ from nextcloud_news_filter.config import Config, ConfigurationError
 
 
 class TestGetConfig:
-    def test_address_missing(self):
+    def test_address_missing(self, monkeypatch):
+        monkeypatch.delenv("NEXTCLOUD_URL", raising=False)
+        monkeypatch.setenv("NEXTCLOUD_PASS", "BAR")
+        monkeypatch.setenv("NEXTCLOUD_USER", "FOO")
         with pytest.raises(ConfigurationError) as exc_info:
             Config()
         assert "NEXTCLOUD_URL" in exc_info.value.args[0]
