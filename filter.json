@@ -1,0 +1,60 @@
+{
+  "skipFeeds": [
+    1678, 1683, 1681, 1682, 1684, 1680, 1659, 1654, 1658, 1657, 1656, 1660, 1655
+  ],
+  "filter": [
+    {
+      "name": "heise",
+      "feedId": 1592,
+      "titleRegex": "heise\\+|heise\\-Angebot|TechStage"
+    },
+    {
+      "name": "g+",
+      "feedId": 1594,
+      "titleRegex": "\\(g\\+\\)"
+    },
+    {
+      "name": "mobiflip > 20 Days",
+      "feedId": 1595,
+      "hoursAge": 504
+    },
+    {
+      "name": "googlewatchblog > 20 Days",
+      "feedId": 1596,
+      "hoursAge": 480
+    },
+    {
+      "name": "Zeit > 1 Tage",
+      "feedId": 1671,
+      "hoursAge": 24
+    },
+    {
+      "name": "Golem > 20 Tage",
+      "feedId": 1594,
+      "hoursAge": 480
+    },
+    {
+      "name": "heise > 20 Tage",
+      "feedId": 1592,
+      "hoursAge": 480
+    },
+    {
+      "name": "PV-magazin>20 Tage",
+      "feedId": 1591,
+      "hoursAge": 480
+    },
+    {
+      "name": "Alles >50 Tage",
+      "hoursAge": 1200
+    },
+    {
+      "name": "Bad Topic Title",
+      "titleRegex": "((.)*AirPods|(.)*Apple Watch|(.*)iPhone \\d\\d)|(.)*Call of Duty|Apple Arcade|Anzeige:|Vodafone Smart|für \\d{1,3},\\d{2} (Euro|€)|Drillisch\\-Tarif|Mobilfunk\\-Tarif|iMac|Aldi Talk|CallYa|HomePod|Apple TV|TV\\+"
+    },
+    {
+      "name": "Zeit dpa",
+      "feedId": 1671,
+      "bodyRegex": "^.*a> None$"
+    }
+  ]
+}

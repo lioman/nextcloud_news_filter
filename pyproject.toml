@@ -1,0 +1,44 @@
+[project]
+name = "nextcloud_news_filter"
+dynamic = ["version"]
+description = "Small library to filter Nextcloud News feeds"
+authors = [{ name = "Lioman", email = "dev@lioman.de" }]
+dependencies = ["requests"]
+requires-python = ">=3.10"
+readme = "README.md"
+license = { text = "GPL-3.0-later" }
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Environment :: Web Environment",
+    "Topic :: Internet :: WWW/HTTP :: Dynamic Content :: News/Diary",
+]
+
+[project.optional-dependencies]
+cli = ["typer>0.8.0"]
+
+[project.scripts]
+nextcloud_news_filter = "nextcloud_news_filter.cli:main"
+
+[tool.pdm.dev-dependencies]
+test = ["pytest", "pytest-mock"]
+dev = ["ruff>=0.1.5"]
+
+[tool.pdm.scripts]
+test = "pytest tests"
+format = "ruff format ./src"
+lint = "ruff check ./src"
+
+[tool.pdm.version]
+source = "scm"
+
+[tool.ruff]
+line-length = 88
+indent-width = 4
+target-version = "py311"
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
