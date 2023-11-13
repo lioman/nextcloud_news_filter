@@ -1,25 +1,84 @@
-stages: # List of stages for jobs, and their order of execution
-  - build
+stages:
+  - test
+  - release
   - deploy
 
-build-nextcloud-news:
-  stage: build
-  image: python:3.11-bookworm
-  environment: production
-  before_script:
-    - apt install zip
+image: python:3.11-bookworm
+before_script:
+  - pip install pdm
+
+variables:
+  SERVERLESS_RELEASE_FILE: nextcloud_news_filter-$CI_COMMIT_TAG.zip
+
+test:
+  stage: test
   script:
-    - pip install -r nextcloud_news_filter/requirements.txt --target ./nextcloud_news_filter/package
-    - zip -r nextcloud_news_filter.zip nextcloud_news_filter/
+    - pdm install --dev
+    - pdm test
+
+lint:
+  stage: test
+  script:
+    - pdm install --dev
+    - pdm lint
+
+build-scaleway-zip:
+  stage: release
+  environment: production
+
+  before_script:
+    - apt-get update
+    - apt-get install zip
+    - pip install pdm
+  script:
+    - cd src
+    - pdm export --prod -o requirements.txt
+    - pip install -r requirements.txt --target ./package
+    - zip -r ../$SERVERLESS_RELEASE_FILE nextcloud_news_filter/ package
   artifacts:
     paths:
-      - ./nextcloud_news_filter.zip
+      - ./$SERVERLESS_RELEASE_FILE
+  only:
+    - tags
+    - main
 
-deploy-nextcloud-news-filter: # This job runs in the deploy stage.
-  stage: deploy # It only runs when *both* jobs in the test stage complete successfully.
-  image: scaleway/cli:2.24
+publish-package:
+  stage: release
   environment: production
-  needs:
-    - build-nextcloud-news
   script:
-    - scw function deploy name=nextcloud_news_filter namespace-id=ns-elegant-thompson runtime=python311 zip-file=./nextcloud_news_filter.zip
+    - pdm publish --username __token__
+  dependencies: []
+  only:
+    - tags
+    - main
+
+deploy-nextcloud-news-filter:
+  stage: deploy
+  before_script: []
+  image:
+    name: scaleway/cli:2.24
+    entrypoint: [""]
+  environment: production
+  script:
+    - echo $SCW_DEFAULT_REGION
+    - /scw function deploy name=nextcloud-news-filter namespace-id=$NAMESPACE_UUID runtime=python311 zip-file=./$SERVERLESS_RELEASE_FILE
+  dependencies:
+    - build-scaleway-zip
+  only:
+    - main
+
+deploy-cron-config:
+  stage: deploy
+  image:
+    name: scaleway/cli:2.24
+    entrypoint: [""]
+  environment: production
+  script:
+    - /scw function cron update $CRON_UUID args="`cat filter.json`" schedule="0/30 7-22 * * *"
+    - /scw function function update $FUNCTION_UUID handler=nextcloud_news_filter.handler environment-variables.NEXTCLOUD_URL=$NEXTCLOUD_URL environment-variables.NEXTCLOUD_USER=$NEXTCLOUD_USER
+  only:
+    refs:
+      - main
+    changes:
+      - filter.json
+  dependencies: []
