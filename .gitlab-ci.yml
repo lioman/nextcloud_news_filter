@@ -48,9 +48,8 @@ publish-package:
   script:
     - pdm publish --username __token__
   dependencies: []
-  only:
-    - tags
-    - main
+  rules:
+    - if: '$CI_COMMIT_TAG =~ /^v[0-9]+\.[0-9]\.[0-9]((a|b|c|rc)\d+)?$/'
 
 deploy-nextcloud-news-filter:
   stage: deploy
