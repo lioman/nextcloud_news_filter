@@ -5,7 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
-## [Unreleased]
+## [0.1.1] - 2023-12-19
+
+### Fixed
+
+- recursion error due to filters configuration
+
+## [0.1.0]
 
 - initial release
 

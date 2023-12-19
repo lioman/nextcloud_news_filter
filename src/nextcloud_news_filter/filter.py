@@ -17,7 +17,7 @@ class FilterConfig:
 
     @property
     def filter(self) -> List[Dict]:
-        return self.filter
+        return self._filter
 
     @property
     def feeds_to_skip(self) -> List[int]:
