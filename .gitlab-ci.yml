@@ -55,7 +55,7 @@ deploy-nextcloud-news-filter:
   stage: deploy
   before_script: []
   image:
-    name: scaleway/cli:2.24
+    name: scaleway/cli:2.26
     entrypoint: [""]
   environment: production
   script:
