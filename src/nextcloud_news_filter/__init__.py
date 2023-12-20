@@ -1,3 +1,4 @@
+import json
 import sys
 import logging
 from os import environ
@@ -13,7 +14,9 @@ def handler(*args, **kwargs) -> None:
         stream=sys.stdout,
     )
     logging.debug(f"Handler called with: {args}")
-    filter_config = FilterConfig(args[0]["body"])
+    filter_json = args[0][0]["body"]
+    filter_config = FilterConfig(json.loads(filter_json))
+
     filter_news(filter_config)
 
 
