@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
+## [0.1.2] - 2023-12-20
+
+### Fixed
+
+- handler, that handles call not correctly
+
 ## [0.1.1] - 2023-12-19
 
 ### Fixed
