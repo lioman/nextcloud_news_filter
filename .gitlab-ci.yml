@@ -68,6 +68,7 @@ deploy-nextcloud-news-filter:
 
 deploy-cron-config:
   stage: deploy
+  before_script: []
   image:
     name: scaleway/cli:2.26
     entrypoint: [""]
