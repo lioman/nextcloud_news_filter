@@ -4,7 +4,7 @@ dynamic = ["version"]
 description = "Small library to filter Nextcloud News feeds"
 authors = [{ name = "Lioman", email = "dev@lioman.de" }]
 dependencies = ["requests"]
-requires-python = ">=3.10"
+requires-python = ">=3.10,<3.12"
 readme = "README.md"
 license = { text = "GPL-3.0-later" }
 classifiers = [
@@ -24,7 +24,10 @@ nextcloud_news_filter = "nextcloud_news_filter.cli:main"
 
 [tool.pdm.dev-dependencies]
 test = ["pytest", "pytest-mock"]
-dev = ["ruff>=0.1.5"]
+dev = [
+    "ruff>=0.1.5",
+    "scaleway-functions-python>=0.2.0",
+]
 
 [tool.pdm.scripts]
 test = "pytest tests"

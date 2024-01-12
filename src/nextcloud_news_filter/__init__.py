@@ -1,23 +1,62 @@
 import json
-import sys
 import logging
+import sys
 from os import environ
-from nextcloud_news_filter.config import Config
+from typing import Dict, Literal, NotRequired, TypedDict
 
+from nextcloud_news_filter.config import Config
 from nextcloud_news_filter.filter import FilterConfig, filter_items, mark_as_read
 
 
-def handler(*args, **kwargs) -> None:
+class RequestContext(TypedDict):
+    """Request context that is sent in the http event."""
+
+    accountId: str
+    resourceId: str
+    stage: str
+    requestId: str
+    resourcePath: str
+    authorizer: Literal[None]
+    httpMethod: str
+    apiId: str
+
+
+class Event(TypedDict):
+    """Event dictionnary passed to the function."""
+
+    path: str
+    httpMethod: str
+    headers: Dict[str, str]
+    multiValueHeaders: Literal[None]
+    queryStringParameters: Dict[str, str]
+    multiValueQueryStringParameters: Literal[None]
+    pathParameters: Literal[None]
+    stageVariable: Dict[str, str]
+    requestContext: RequestContext
+    body: str
+    isBase64Encoded: NotRequired[Literal[True]]
+
+
+class Context(TypedDict):
+    """Context dictionnary passed to the function."""
+
+    memoryLimitInMb: int
+    functionName: str
+    functionVersion: str
+
+
+def handler(event: Event, context: Context):
     logging.basicConfig(
-        level=environ.get("LOG_LEVEL", logging.DEBUG),
+        level=environ.get("LOG_LEVEL", logging.INFO),
         format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
         stream=sys.stdout,
     )
-    logging.debug(f"Handler called with: {args}")
-    filter_json = args[0][0]["body"]
+    logging.debug(f"Handler called with: {event}")
+    filter_json = event["body"]
     filter_config = FilterConfig(json.loads(filter_json))
 
     filter_news(filter_config)
+    return "Handler finished"
 
 
 def filter_news(filter_config: FilterConfig) -> None:
@@ -35,3 +74,11 @@ def filter_news(filter_config: FilterConfig) -> None:
             config=config,
         )
     logging.debug("finished run")
+
+
+if __name__ == "__main__":
+    # The import is conditional so that you do not need
+    # to package the library when deploying on Scaleway Functions.
+    from scaleway_functions_python import local
+
+    local.serve_handler(handler, port=8080)
