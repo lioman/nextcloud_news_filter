@@ -16,18 +16,21 @@ classifiers = [
     "Topic :: Internet :: WWW/HTTP :: Dynamic Content :: News/Diary",
 ]
 
+[project.urls]
+"Source" = "https://gitlab.com/lioman/nextcloud_news_filter"
+"Issue Tracker" = "https://gitlab.com/lioman/nextcloud_news_filter/-/issues"
+"Changelog" = "https://gitlab.com/lioman/nextcloud_news_filter/-/blob/main/CHANGELOG.md"
+
 [project.optional-dependencies]
 cli = ["typer>0.8.0"]
+
 
 [project.scripts]
 nextcloud_news_filter = "nextcloud_news_filter.cli:main"
 
 [tool.pdm.dev-dependencies]
 test = ["pytest", "pytest-mock"]
-dev = [
-    "ruff>=0.1.5",
-    "scaleway-functions-python>=0.2.0",
-]
+dev = ["ruff>=0.1.5", "scaleway-functions-python>=0.2.0"]
 
 [tool.pdm.scripts]
 test = "pytest tests"
