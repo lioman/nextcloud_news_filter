@@ -60,6 +60,6 @@ class TestGetConfig:
         monkeypatch.setenv("NEXTCLOUD_USER", "user")
         monkeypatch.setenv("NEXTCLOUD_PASS", "pass")
         test_batch_size = randint(0, 300)
-        monkeypatch.setenv("BATCH_SIZE", test_batch_size)
+        monkeypatch.setenv("BATCH_SIZE", str(test_batch_size))
         config = Config()
         assert config.batch_size == test_batch_size
