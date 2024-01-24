@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
+## [0.1.3] - 2023-01-24
+
+### Fixed
+
+- handler (again) according to documentation
+
 ## [0.1.2] - 2023-12-20
 
 ### Fixed
@@ -28,4 +34,6 @@ and this project adheres to [Semantic Versioning].
 
 <!-- Versions -->
 
-[unreleased]: https://github.com/BY-Product-Development/Repository/compare/v0.0.0...HEAD
+[0.1.3]: https://gitlab.com/lioman/nextcloud_news_filter/-/releases/v0.1.3
+[0.1.2]: https://gitlab.com/lioman/nextcloud_news_filter/-/releases/v0.1.2
+[0.1.1]: https://gitlab.com/lioman/nextcloud_news_filter/-/releases/v0.1.1
