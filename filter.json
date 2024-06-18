@@ -48,8 +48,16 @@
       "hoursAge": 1200
     },
     {
-      "name": "Bad Topic Title",
-      "titleRegex": "((.)*AirPods|(.)*Apple Watch|(.*)iPhone \\d\\d)|(.)*Call of Duty|Apple Arcade|Anzeige:|Vodafone Smart|für \\d{1,3},\\d{2} (Euro|€)|Drillisch\\-Tarif|Mobilfunk\\-Tarif|iMac|Aldi Talk|CallYa|HomePod|Apple TV|TV\\+"
+      "name": "Not Interesting Topics: Apple",
+      "titleRegex": "Apple iOS 1\\d kommt|((.)*AirPods|(.)*Apple Watch|(.*)iPhone \\d\\d)|Apple Arcade|iMac|HomePod|Apple TV|TV\\+"
+    },
+    {
+      "name": "Not Interesting Topics: Assorted",
+      "titleRegex": "PlayStation 5|Fitbit|Google Pixel Watch|(.)*Call of Duty|Sky und WOW"
+    },
+    {
+      "name": "Advertisements",
+      "titleRegex": "DR\\.SIM|Mega SIM|klarmobil|ja! mobil|Mobilfunk\\-Tarif|Aldi Talk|CallYa|Anzeige:|Vodafone Smart|für \\d{1,3},\\d{2} (Euro|€)|Drillisch\\-Tarif|fraenk"
     },
     {
       "name": "Zeit dpa",
