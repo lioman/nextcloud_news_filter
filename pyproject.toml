@@ -33,7 +33,7 @@ nextcloud_news_filter = "nextcloud_news_filter.cli:main"
 [tool.pdm.dev-dependencies]
 test = ["pytest", "pytest-mock"]
 dev = [
-    "ruff>=0.3.5",
+    "ruff>=0.4.6",
     "scaleway-functions-python>=0.2.0",
     "responses>=0.25.0",
     "types-requests>=2.31.0.20240406",
