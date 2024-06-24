@@ -54,7 +54,9 @@ class FilterConfig:
                 "minPubDate": None,
             }
             if hours := feed_filter.get("hoursAge"):
-                int((datetime.now() - timedelta(hours=hours)).timestamp())
+                one_filter["minPubDate"] = int(
+                    (datetime.now() - timedelta(hours=hours)).timestamp()
+                )
 
             compiled_filters.append(one_filter)
         return compiled_filters
@@ -100,6 +102,7 @@ def apply_filter_to_batch(
                         f"with title {item['title']}",
                     )
                     matched_item_ids.append(item["id"])
+                    break
     return matched_item_ids, unread_item_count
 
 
