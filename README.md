@@ -7,6 +7,8 @@ It is originally based on [nextcloud-news-filter](https://github.com/mathisdt/ne
 
 This package is in an early stage of development. Things like configuration may change heavily in this early stage.
 
+![coverage](https://gitlab.com/lioman/nextcloud_news_filter/badges/main/coverage.svg)
+
 ## Usage
 
 This can be used directly on the system via a cli or as serverless function

@@ -6,10 +6,10 @@ except ImportError as e:
 
 import logging
 from pathlib import Path
-from typing_extensions import Annotated
+from typing import Annotated
+
 from nextcloud_news_filter import filter_news
 from nextcloud_news_filter.config import ConfigurationError
-
 from nextcloud_news_filter.filter import FilterConfig
 
 
@@ -26,7 +26,8 @@ def cli(
             filter_news(filter_config)
         except ConfigurationError:
             print(
-                "There is a configuration error. Fix the ones, that are mentioned above!"
+                "There is a configuration error."
+                "Fix the ones, that are mentioned above!"
             )
 
 
@@ -35,4 +36,4 @@ def main():
 
 
 if __name__ == "__main__":
-    typer.run(cli)
+    main()

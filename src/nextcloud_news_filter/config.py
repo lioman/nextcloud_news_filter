@@ -44,9 +44,7 @@ class Config:
     def _basic_auth(self) -> str:
         return (
             base64.encodebytes(
-                f'{environ["NEXTCLOUD_USER"]}:{environ["NEXTCLOUD_PASS"]}'.encode(
-                    encoding="UTF-8"
-                )
+                f'{environ["NEXTCLOUD_USER"]}:{environ["NEXTCLOUD_PASS"]}'.encode()
             )
             .decode(encoding="UTF-8")
             .strip()

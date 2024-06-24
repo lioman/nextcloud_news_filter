@@ -2,10 +2,14 @@ import json
 import logging
 import sys
 from os import environ
-from typing import Dict, Literal, NotRequired, TypedDict
+from typing import Literal, NotRequired, TypedDict
 
 from nextcloud_news_filter.config import Config
-from nextcloud_news_filter.filter import FilterConfig, filter_items, mark_as_read
+from nextcloud_news_filter.filter import (
+    FilterConfig,
+    filter_items,
+    mark_as_read,
+)
 
 
 class RequestContext(TypedDict):
@@ -26,12 +30,12 @@ class Event(TypedDict):
 
     path: str
     httpMethod: str
-    headers: Dict[str, str]
+    headers: dict[str, str]
     multiValueHeaders: Literal[None]
-    queryStringParameters: Dict[str, str]
+    queryStringParameters: dict[str, str]
     multiValueQueryStringParameters: Literal[None]
     pathParameters: Literal[None]
-    stageVariable: Dict[str, str]
+    stageVariable: dict[str, str]
     requestContext: RequestContext
     body: str
     isBase64Encoded: NotRequired[Literal[True]]
@@ -76,9 +80,13 @@ def filter_news(filter_config: FilterConfig) -> None:
     logging.debug("finished run")
 
 
-if __name__ == "__main__":
+def setup_scaleway():
     # The import is conditional so that you do not need
     # to package the library when deploying on Scaleway Functions.
     from scaleway_functions_python import local
 
     local.serve_handler(handler, port=8080)
+
+
+if __name__ == "__main__":
+    setup_scaleway()

@@ -1,67 +1,68 @@
-from datetime import datetime, timedelta
 import json
 import logging
-from pathlib import Path
 import re
-from typing import Dict, List, Optional, Tuple
+from datetime import datetime, timedelta
+from pathlib import Path
+from typing import Optional
+
 import requests
 
 from nextcloud_news_filter import Config
+from nextcloud_news_filter.model import FeedType, Filter, FilterJson, Item
 
 
 class FilterConfig:
-    def __init__(self, filter_json: Dict):
+    def __init__(self, filter_json: FilterJson):
         self._filter = FilterConfig._build_filters(filter_json["filter"])
         if isinstance(feeds_to_skip := filter_json.get("skipFeeds", []), list):
             self._feeds_to_skip = feeds_to_skip
 
     @property
-    def filter(self) -> List[Dict]:
+    def filter(self) -> list[dict]:
         return self._filter
 
     @property
-    def feeds_to_skip(self) -> List[int]:
+    def feeds_to_skip(self) -> list[int]:
         return self._feeds_to_skip
 
     @classmethod
     def from_file(cls, filter_file: Path) -> Optional["FilterConfig"]:
         try:
-            with open(filter_file, "r") as f:
+            with open(filter_file) as f:
                 filter_config = json.loads(f.read())
                 return cls(filter_config)
-        except FileNotFoundError:
+        except FileNotFoundError as e:
             logging.error(
                 f"Can not open file: {filter_file}. Please enter a valid path."
             )
+            raise e
 
     @staticmethod
-    def _build_filters(filters: List[Dict]) -> List[Dict]:
+    def _build_filters(filters: list[Filter]) -> list[dict]:
+        def _compile(regex: str | None) -> re.Pattern | None:
+            if isinstance(regex, str):
+                return re.compile(regex, re.IGNORECASE)
+            return None
+
         compiled_filters = []
         for feed_filter in filters:
             one_filter = {
                 "name": feed_filter["name"],
                 "feedId": feed_filter.get("feedId"),
-                "titleRegex": re.compile(feed_filter["titleRegex"], re.IGNORECASE)
-                if feed_filter.get("titleRegex")
-                else None,
-                "bodyRegex": re.compile(feed_filter["bodyRegex"], re.IGNORECASE)
-                if feed_filter.get("bodyRegex")
-                else None,
-                "minPubDate": int(
-                    (
-                        datetime.now() - timedelta(hours=int(feed_filter["hoursAge"]))
-                    ).timestamp()
-                )
-                if feed_filter.get("hoursAge")
-                else None,
+                "titleRegex": _compile(feed_filter.get("titleRegex")),
+                "bodyRegex": _compile(feed_filter.get("bodyRegex")),
+                "minPubDate": None,
             }
+            if hours := feed_filter.get("hoursAge"):
+                int((datetime.now() - timedelta(hours=hours)).timestamp())
+
             compiled_filters.append(one_filter)
         return compiled_filters
 
 
-def _apply_filter_to_batch(
-    items: Dict, filters_config: FilterConfig
-) -> Tuple[List[int], int]:
+def apply_filter_to_batch(
+    items: list[Item], filters_config: FilterConfig
+) -> tuple[list[int], int]:
     unread_item_count = 0
     matched_item_ids = []
     for item in items:
@@ -95,18 +96,19 @@ def _apply_filter_to_batch(
                 ):
                     logging.log(
                         logging.INFO,
-                        f"filter: '{one_filter['name']}' matched item {item['id']} with title {item['title']}",
+                        f"filter: '{one_filter['name']}' matched item {item['id']}"
+                        f"with title {item['title']}",
                     )
                     matched_item_ids.append(item["id"])
     return matched_item_ids, unread_item_count
 
 
-def filter_items(config: Config, filter_config: FilterConfig) -> Tuple[List[int], int]:
+def filter_items(config: Config, filter_config: FilterConfig) -> tuple[list[int], int]:
     batch_size = config.batch_size
     offset = 0
-    matched_item_ids = []
+    matched_item_ids: list[int] = []
     unread_item_count = 0
-    feed_type = 3  # Feed: 0, Folder: 1, Starred: 2, All: 3
+    feed_type = FeedType.All
     while True:
         response = requests.get(
             url=f"{config.nextcloud_url}/index.php/apps/news/api/v1-3/items",
@@ -126,16 +128,17 @@ def filter_items(config: Config, filter_config: FilterConfig) -> Tuple[List[int]
         if len(items) == 0:
             break
 
-        matched, count = _apply_filter_to_batch(items, filter_config)
+        matched, count = apply_filter_to_batch(items, filter_config)
         matched_item_ids = matched_item_ids + matched
         unread_item_count += count
         offset = items[-1]["id"]
     return matched_item_ids, unread_item_count
 
 
-def mark_as_read(matched_item_ids: List[int], config: Config):
+def mark_as_read(matched_item_ids: list[int], config: Config):
+    url = f"{config.nextcloud_url}/index.php/apps/news/api/v1-3/items/read/multiple"
     requests.post(
-        url=f"{config.nextcloud_url}/index.php/apps/news/api/v1-3/items/read/multiple",
+        url=url,
         headers=dict(Authorization=config.auth_header),
         json=dict(itemIds=matched_item_ids),
     )
