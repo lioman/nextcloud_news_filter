@@ -28,6 +28,7 @@ class TestFilterConfig:
             FilterConfig.from_file(Path(file))
             assert file in caplog.text
 
+
 class TestFilterItems:
     @responses.activate
     def test_items_api_called(self, config: Config):
@@ -93,6 +94,11 @@ class TestFilterItems:
             "getRead": "false",  # ignore read entries
         }
         apply_filter_mock.assert_not_called()
+
+
+class TestApplyFilterToBatch:
+    def test_(self, mocker: MockerFixture, filter_config):
+        pass
 
 
 @responses.activate
