@@ -13,8 +13,18 @@ variables:
 test:
   stage: test
   script:
-    - pdm install --dev
+    - pdm install -G:all
     - pdm test
+  coverage: '/TOTAL\s+\d+\s+\d+\s+(\d+%)/'
+  artifacts:
+    # https://docs.gitlab.com/ee/ci/yaml/index.html#artifactsexpire_in
+    expire_in: 2 week
+
+    # https://docs.gitlab.com/ee/ci/testing/test_coverage_visualization.html
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage.xml
 
 lint:
   stage: test

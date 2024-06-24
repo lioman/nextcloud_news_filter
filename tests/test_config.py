@@ -1,5 +1,6 @@
-import pytest
 from random import randint
+
+import pytest
 from nextcloud_news_filter.config import Config, ConfigurationError
 
 
