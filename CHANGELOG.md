@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
+## [Unreleased] - Tbd
+
+### Changed
+
+- improve code quality
+- refactor filters
+- only first matching filter is considered
+
 ## [0.1.3] - 2023-01-24
 
 ### Fixed
