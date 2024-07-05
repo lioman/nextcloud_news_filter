@@ -84,7 +84,7 @@ deploy-config:
     entrypoint: [""]
   environment: production
   script:
-    - /scw function cron update $CRON_UUID args="`cat filter.json`" schedule="0/30 7-22 * * *"
+    - /scw function cron update $CRON_UUID args="`cat filter.json`" schedule="1/31 7-22 * * *"
     - /scw function function update $FUNCTION_UUID handler=nextcloud_news_filter.handler environment-variables.NEXTCLOUD_URL=$NEXTCLOUD_URL environment-variables.NEXTCLOUD_USER=$NEXTCLOUD_USER
   only:
     refs:
