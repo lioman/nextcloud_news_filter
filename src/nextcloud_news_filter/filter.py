@@ -89,7 +89,7 @@ class FilterConfig:
             ):
                 logging.log(
                     logging.INFO,
-                    f"filter: '{one_filter['name']}' matched item {item['id']}"
+                    f"filter: '{one_filter['name']}' matched item {item['id']} "
                     f"with title {item['title']}",
                 )
                 return True
