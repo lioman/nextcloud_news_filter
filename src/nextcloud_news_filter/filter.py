@@ -3,7 +3,6 @@ import logging
 import re
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Optional
 
 import requests
 
@@ -26,7 +25,7 @@ class FilterConfig:
         return self._feeds_to_skip
 
     @classmethod
-    def from_file(cls, filter_file: Path) -> Optional["FilterConfig"]:
+    def from_file(cls, filter_file: Path) -> "FilterConfig | None":
         try:
             with open(filter_file) as f:
                 filter_config = json.loads(f.read())
@@ -61,49 +60,50 @@ class FilterConfig:
             compiled_filters.append(one_filter)
         return compiled_filters
 
-
-def apply_filter_to_batch(
-    items: list[Item], filters_config: FilterConfig
-) -> tuple[list[int], int]:
-    unread_item_count = 0
-    matched_item_ids = []
-    for item in items:
-        if item["feedId"] in filters_config.feeds_to_skip:
+    def is_filter_matching_item(self, item: Item) -> bool:
+        if item["feedId"] in self.feeds_to_skip:
             logging.debug(f'Skipped because {item["feedId"]}')
-            continue
-        if item["unread"]:
-            unread_item_count = unread_item_count + 1
-            for one_filter in filters_config.filter:
-                if (
-                    (
-                        "feedId" not in one_filter
-                        or one_filter["feedId"] is None
-                        or one_filter["feedId"] == item["feedId"]
-                    )
-                    and (
-                        "titleRegex" not in one_filter
-                        or one_filter["titleRegex"] is None
-                        or one_filter["titleRegex"].search(item["title"])
-                    )
-                    and (
-                        "bodyRegex" not in one_filter
-                        or one_filter["bodyRegex"] is None
-                        or one_filter["bodyRegex"].search(item["body"])
-                    )
-                    and (
-                        "minPubDate" not in one_filter
-                        or one_filter["minPubDate"] is None
-                        or item["pubDate"] < one_filter["minPubDate"]
-                    )
-                ):
-                    logging.log(
-                        logging.INFO,
-                        f"filter: '{one_filter['name']}' matched item {item['id']}"
-                        f"with title {item['title']}",
-                    )
+            return False
+        for one_filter in self.filter:
+            if (
+                (
+                    "feedId" not in one_filter
+                    or one_filter["feedId"] is None
+                    or one_filter["feedId"] == item["feedId"]
+                )
+                and (
+                    "titleRegex" not in one_filter
+                    or one_filter["titleRegex"] is None
+                    or one_filter["titleRegex"].search(item["title"])
+                )
+                and (
+                    "bodyRegex" not in one_filter
+                    or one_filter["bodyRegex"] is None
+                    or one_filter["bodyRegex"].search(item["body"])
+                )
+                and (
+                    "minPubDate" not in one_filter
+                    or one_filter["minPubDate"] is None
+                    or item["pubDate"] < one_filter["minPubDate"]
+                )
+            ):
+                logging.log(
+                    logging.INFO,
+                    f"filter: '{one_filter['name']}' matched item {item['id']}"
+                    f"with title {item['title']}",
+                )
+                return True
+        return False
+
+    def apply_filter_to_batch(self, items: list[Item]) -> tuple[list[int], int]:
+        unread_item_count = 0
+        matched_item_ids = []
+        for item in items:
+            if item["unread"]:
+                unread_item_count = unread_item_count + 1
+                if self.is_filter_matching_item(item):
                     matched_item_ids.append(item["id"])
-                    break
-    return matched_item_ids, unread_item_count
+        return matched_item_ids, unread_item_count
 
 
 def filter_items(config: Config, filter_config: FilterConfig) -> tuple[list[int], int]:
@@ -131,7 +131,7 @@ def filter_items(config: Config, filter_config: FilterConfig) -> tuple[list[int]
         if len(items) == 0:
             break
 
-        matched, count = apply_filter_to_batch(items, filter_config)
+        matched, count = filter_config.apply_filter_to_batch(items)
         matched_item_ids = matched_item_ids + matched
         unread_item_count += count
         offset = items[-1]["id"]
