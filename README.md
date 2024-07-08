@@ -3,11 +3,19 @@
 This library is designed to filter Feeds from [Nextcloud News](https://nextcloud.github.io/news/), by marking them as read.
 It is originally based on [nextcloud-news-filter](https://github.com/mathisdt/nextcloud-news-filter) by mathisdt.
 
+![PyPI - Version](https://img.shields.io/pypi/v/nextcloud_news_filter)
+[![image](https://img.shields.io/pypi/pyversions/nextcloud_news_filter.svg)](https://pypi.python.org/pypi/nextcloud_news_filter)
+![PyPI - License](https://img.shields.io/pypi/l/nextcloud_news_filter)
+
+[![pipeline status](https://img.shields.io/gitlab/pipeline-status/lioman/nextcloud_news_filter?branch=main)](https://gitlab.com/lioman/nextcloud_news_filter/-/commits/main)
+[![coverage report](https://img.shields.io/gitlab/pipeline-coverage/lioman/nextcloud_news_filter?branch=main)](https://gitlab.com/lioman/nextcloud_news_filter/-/commits/main)
+[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+
 ## State of this package
 
 This package is in an early stage of development. Things like configuration may change heavily in this early stage.
 
-![coverage](https://gitlab.com/lioman/nextcloud_news_filter/badges/main/coverage.svg)
 
 ## Usage
 
@@ -17,7 +25,7 @@ This can be used directly on the system via a cli or as serverless function
 
 #### CLI
 
-If you want to use the CLI install it with `pip install nextcloud_news_filter[cli]`
+If you want to use the CLI install it with `pipx install nextcloud_news_filter[cli]`
 
 #### Scaleway Serverless function
 
