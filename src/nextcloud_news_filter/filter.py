@@ -4,7 +4,7 @@ import re
 from datetime import datetime, timedelta
 from pathlib import Path
 
-import requests
+import httpx
 
 from nextcloud_news_filter import Config
 from nextcloud_news_filter.model import FeedType, Filter, FilterJson, Item
@@ -112,35 +112,36 @@ def filter_items(config: Config, filter_config: FilterConfig) -> tuple[list[int]
     matched_item_ids: list[int] = []
     unread_item_count = 0
     feed_type = FeedType.All
-    while True:
-        response = requests.get(
-            url=f"{config.nextcloud_url}/index.php/apps/news/api/v1-3/items",
-            headers=dict(Authorization=config.auth_header),
-            json=dict(
-                batchSize=batch_size,
-                offset=offset,
-                type=feed_type,
-                id=0,  # 0 = all
-                getRead="false",
-            ),
-        )
-        if not response.ok:
-            break
-        items = response.json()["items"]
+    with httpx.Client(http2=True) as client:
+        while True:
+            response = client.get(
+                url=f"{config.nextcloud_url}/index.php/apps/news/api/v1-3/items",
+                headers=dict(Authorization=config.auth_header),
+                params=dict(
+                    batchSize=batch_size,
+                    offset=offset,
+                    type=feed_type,
+                    id=0,  # 0 = all
+                    getRead="false",
+                ),
+            )
+            if response.status_code != httpx.codes.OK:
+                break
+            items = response.json()["items"]
 
-        if len(items) == 0:
-            break
+            if len(items) == 0:
+                break
 
-        matched, count = filter_config.apply_filter_to_batch(items)
-        matched_item_ids = matched_item_ids + matched
-        unread_item_count += count
-        offset = items[-1]["id"]
+            matched, count = filter_config.apply_filter_to_batch(items)
+            matched_item_ids = matched_item_ids + matched
+            unread_item_count += count
+            offset = items[-1]["id"]
     return matched_item_ids, unread_item_count
 
 
 def mark_as_read(matched_item_ids: list[int], config: Config):
     url = f"{config.nextcloud_url}/index.php/apps/news/api/v1-3/items/read/multiple"
-    requests.post(
+    httpx.post(
         url=url,
         headers=dict(Authorization=config.auth_header),
         json=dict(itemIds=matched_item_ids),

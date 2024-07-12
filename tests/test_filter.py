@@ -3,10 +3,10 @@ import logging
 from pathlib import Path
 
 import pytest
-import responses
 from nextcloud_news_filter.config import Config
 from nextcloud_news_filter.filter import FilterConfig, filter_items, mark_as_read
 from nextcloud_news_filter.model import FilterJson
+from pytest_httpx import HTTPXMock
 from pytest_mock import MockerFixture
 
 from tests.conftest import MockConfig
@@ -190,62 +190,59 @@ class TestFilterConfig:
 
 
 class TestFilterItems:
-    @responses.activate
-    def test_items_api_called(self, config: Config):
-        rsp = responses.add(
-            responses.GET,
-            url=f"{config.nextcloud_url}/index.php/apps/news/api/v1-3/items",
+    def test_items_api_called(self, config: Config, httpx_mock: HTTPXMock):
+        httpx_mock.add_response(
+            method="GET",
+            url=f"{config.nextcloud_url}/index.php/apps/news/api/v1-3/items?batchSize=50&offset=0&type=3&id=0&getRead=false",
             json={"items": []},
-            status=502,  # The rest of the code will not be executed
+            status_code=502,  # The rest of the code will not be executed
         )
+
         filter_conf = FilterConfig(filter_json={"filter": [{"name": "test"}]})
         filter_items(config=config, filter_config=filter_conf)
-        assert rsp.call_count == 1
-        assert json.loads(rsp.calls[0].request.body) == {  # type: ignore
-            "batchSize": 50,
-            "offset": 0,
-            "type": 3,  # Type: all
-            "id": 0,  # Get all entries
-            "getRead": "false",  # ignore read entries
-        }
 
-    @responses.activate
     def test_filter_is_skipped_no_items(
-        self, config: Config, filter_config: FilterConfig, mocker: MockerFixture
+        self,
+        config: Config,
+        filter_config: FilterConfig,
+        mocker: MockerFixture,
+        httpx_mock: HTTPXMock,
     ):
-        rsp = responses.add(
-            responses.GET,
-            url=f"{config.nextcloud_url}/index.php/apps/news/api/v1-3/items",
+        httpx_mock.add_response(
+            method="GET",
+            url=f"{config.nextcloud_url}/index.php/apps/news/api/v1-3/items?batchSize=50&offset=0&type=3&id=0&getRead=false",
             json={"items": []},
-            status=200,
+            status_code=200,
         )
         apply_filter_mock = mocker.patch.object(filter_config, "apply_filter_to_batch")
         filter_items(config=config, filter_config=filter_config)
 
-        assert rsp.call_count == 1
         apply_filter_mock.assert_not_called()
 
-    @responses.activate
     def test_filter_are_applied_to_batch(
-        self, config: Config, filter_config: FilterConfig, mocker: MockerFixture
+        self,
+        config: Config,
+        filter_config: FilterConfig,
+        mocker: MockerFixture,
+        httpx_mock: HTTPXMock,
     ):
-        rsp1 = responses.add(
-            responses.GET,
-            url=f"{config.nextcloud_url}/index.php/apps/news/api/v1-3/items",
+        httpx_mock.add_response(
+            method="GET",
+            url=f"{config.nextcloud_url}/index.php/apps/news/api/v1-3/items?batchSize=50&offset=0&type=3&id=0&getRead=false",
             json={"items": [{"id": 42}]},
-            status=200,
+            status_code=200,
         )
-        rsp2 = responses.add(
-            responses.GET,
-            url=f"{config.nextcloud_url}/index.php/apps/news/api/v1-3/items",
+        httpx_mock.add_response(
+            method="GET",
+            url=f"{config.nextcloud_url}/index.php/apps/news/api/v1-3/items?batchSize=50&offset=42&type=3&id=0&getRead=false",
             json={"items": [{"id": 48}]},
-            status=200,
+            status_code=200,
         )
-        rsp3 = responses.add(
-            responses.GET,
-            url=f"{config.nextcloud_url}/index.php/apps/news/api/v1-3/items",
+        httpx_mock.add_response(
+            method="GET",
+            url=f"{config.nextcloud_url}/index.php/apps/news/api/v1-3/items?batchSize=50&offset=48&type=3&id=0&getRead=false",
             json={"items": []},
-            status=200,
+            status_code=200,
         )
         apply_filter_mock = mocker.patch.object(
             filter_config,
@@ -256,23 +253,17 @@ class TestFilterItems:
             [1, 2, 3, 43],
             24,
         )
-
-        assert rsp1.call_count == 1
-        assert json.loads(rsp1.calls[0].request.body)["offset"] == 0  # type: ignore
-        assert rsp2.call_count == 1
-        assert json.loads(rsp2.calls[0].request.body)["offset"] == 42  # type: ignore
-        assert rsp3.call_count == 1
-        assert json.loads(rsp3.calls[0].request.body)["offset"] == 48  # type: ignore
         assert apply_filter_mock.call_count == 2
 
 
-@responses.activate
-def test_mark_as_read(config: MockConfig):
-    rsp = responses.add(
-        responses.POST,
+def test_mark_as_read(
+    config: MockConfig,
+    httpx_mock: HTTPXMock,
+):
+    httpx_mock.add_response(
+        method="POST",
         url=f"{config.nextcloud_url}/index.php/apps/news/api/v1-3/items/read/multiple",
-        status=200,
+        status_code=200,
+        match_json={"itemIds": [1, 2, 6]},
     )
     mark_as_read([1, 2, 6], config=config)
-    assert rsp.call_count == 1
-    assert json.loads(rsp.calls[0].request.body) == {"itemIds": [1, 2, 6]}  # type: ignore
