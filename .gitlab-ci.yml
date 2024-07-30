@@ -86,6 +86,7 @@ deploy-nextcloud-news-filter:
   script:
     - echo $SCW_DEFAULT_REGION
     - /scw function deploy name=nextcloud-news-filter namespace-id=$NAMESPACE_UUID runtime=python312 zip-file=./$SERVERLESS_RELEASE_FILE
+    - /scw function function update timeout=300s sandbox=v2 $FUNCTION_UUID handler=nextcloud_news_filter.handler environment-variables.NEXTCLOUD_URL=$NEXTCLOUD_URL environment-variables.NEXTCLOUD_USER=$NEXTCLOUD_USER
   dependencies:
     - build-scaleway-zip
   only:
@@ -100,7 +101,6 @@ deploy-config:
   environment: production
   script:
     - /scw function cron update $CRON_UUID args="`cat filter.json`" schedule="1/31 7-22 * * *"
-    - /scw function function update timeout=5 sandbox=v2 $FUNCTION_UUID handler=nextcloud_news_filter.handler environment-variables.NEXTCLOUD_URL=$NEXTCLOUD_URL environment-variables.NEXTCLOUD_USER=$NEXTCLOUD_USER
   only:
     refs:
       - filter
