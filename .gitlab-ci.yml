@@ -100,7 +100,7 @@ deploy-config:
   environment: production
   script:
     - /scw function cron update $CRON_UUID args="`cat filter.json`" schedule="1/31 7-22 * * *"
-    - /scw function function update $FUNCTION_UUID handler=nextcloud_news_filter.handler environment-variables.NEXTCLOUD_URL=$NEXTCLOUD_URL environment-variables.NEXTCLOUD_USER=$NEXTCLOUD_USER
+    - /scw function function update timeout=5 sandbox=v2 $FUNCTION_UUID handler=nextcloud_news_filter.handler environment-variables.NEXTCLOUD_URL=$NEXTCLOUD_URL environment-variables.NEXTCLOUD_USER=$NEXTCLOUD_USER
   only:
     refs:
       - filter
