@@ -188,6 +188,48 @@ class TestFilterConfig:
             assert filter[0]["name"] in caplog.text
             assert filter[1]["name"] not in caplog.text
 
+        @pytest.mark.parametrize(
+            "item,expected",
+            [
+                (
+                    {
+                        "id": 22,
+                        "feedId": 3434,
+                        "title": "Hello",
+                        "body": "<p>World</p>",
+                    },
+                    True,
+                ),
+                (
+                    {
+                        "id": 22,
+                        "feedId": 3434,
+                        "title": "Hello",
+                        "body": "<p>Friend</p>",
+                    },
+                    False,
+                ),
+            ],
+        )
+        def test_matching_two_filter_conditions(
+            self,
+            item,
+            expected,
+            caplog: pytest.LogCaptureFixture,
+        ):
+            filter = [
+                {
+                    "name": "two filters present",
+                    "titleRegex": "Hello",
+                    "bodyRegex": "World",
+                }
+            ]
+            item = item
+
+            filter_config = FilterConfig(filter_json={"filter": filter})  # type: ignore
+            caplog.set_level(logging.INFO)
+            assert filter_config.is_filter_matching_item(item) is expected  # type: ignore
+
 
 class TestFilterItems:
     def test_items_api_called(self, config: Config, httpx_mock: HTTPXMock):
