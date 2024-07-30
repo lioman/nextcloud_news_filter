@@ -103,7 +103,7 @@ deploy-config:
     - /scw function function update $FUNCTION_UUID handler=nextcloud_news_filter.handler environment-variables.NEXTCLOUD_URL=$NEXTCLOUD_URL environment-variables.NEXTCLOUD_USER=$NEXTCLOUD_USER
   only:
     refs:
-      - main
+      - filter
     changes:
       - filter.json
       - .gitlab-ci.yml

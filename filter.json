@@ -41,7 +41,7 @@
     {
       "name": "heise Zusammenfassung",
       "feedId": 1592,
-      "titleRegex": "^Montag:|^Donnerstag:"
+      "titleRegex": "^Montag:|^Dienstag:|^Mittwoch:|^Donnerstag:|^Freitag:"
     },
     {
       "name": "PV-magazin>20 Tage",
@@ -54,11 +54,11 @@
     },
     {
       "name": "Not Interesting Topics: Apple",
-      "titleRegex": "Apple iOS 1\\d kommt|((.)*AirPods|(.)*Apple Watch|(.*)iPhone \\d\\d)|Apple Arcade|iMac|HomePod|Apple TV|TV\\+"
+      "titleRegex": "Apple iOS 1\\d|((.)*AirPods|(.)*Apple Watch|(.*)iPhone \\d\\d)|Apple Arcade|iMac|HomePod|Apple TV|TV\\+"
     },
     {
       "name": "Not Interesting Topics: Assorted",
-      "titleRegex": "PlayStation 5|Fitbit|Google Pixel Watch|(.)*Call of Duty|Sky und WOW"
+      "titleRegex": "PlayStation 5|Fitbit|Google Pixel Watch|(.)*Call of Duty|Sky und WOW|Xbox Game Pass"
     },
     {
       "name": "Advertisements",
