@@ -4,7 +4,7 @@ stages:
   - promote
   - deploy
 
-image: python:3.11-bookworm
+image: python:3.12-bookworm
 before_script:
   - pip install pdm
 
@@ -80,12 +80,12 @@ deploy-nextcloud-news-filter:
   stage: deploy
   before_script: []
   image:
-    name: scaleway/cli:2.26
+    name: scaleway/cli:2.32
     entrypoint: [""]
   environment: production
   script:
     - echo $SCW_DEFAULT_REGION
-    - /scw function deploy name=nextcloud-news-filter namespace-id=$NAMESPACE_UUID runtime=python311 zip-file=./$SERVERLESS_RELEASE_FILE
+    - /scw function deploy name=nextcloud-news-filter namespace-id=$NAMESPACE_UUID runtime=python312 zip-file=./$SERVERLESS_RELEASE_FILE
   dependencies:
     - build-scaleway-zip
   only:
@@ -95,7 +95,7 @@ deploy-config:
   stage: deploy
   before_script: []
   image:
-    name: scaleway/cli:2.26
+    name: scaleway/cli:2.32
     entrypoint: [""]
   environment: production
   script:
