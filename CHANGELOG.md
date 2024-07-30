@@ -5,13 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
-## [Unreleased] - Tbd
+## [0.2.0] - 2024-07-30
+
+### Added
+
+- python 3.12 is supported
 
 ### Changed
 
 - improve code quality
 - refactor filters
 - only first matching filter is considered
+- use httpx instead of requests
 
 ## [0.1.3] - 2023-01-24
 
