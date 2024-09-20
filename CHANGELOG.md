@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
+## [unrelesed] - 2024-09-20
+
+### Added
+
+- Ignoring starred items from filters
+
 ## [0.2.0] - 2024-07-30
 
 ### Added
