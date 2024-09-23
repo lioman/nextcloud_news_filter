@@ -73,6 +73,28 @@ class TestFilterConfig:
         assert is_matching_mock.call_count == call_count
 
     class TestIsFilterMatchingItem:
+        def test_item_is_skipped_if_starred(self, caplog: pytest.LogCaptureFixture):
+            filter_config = FilterConfig(
+                filter_json={
+                    "filter": [
+                        {
+                            "name": "hoursAge > 20 Days",
+                            "feedId": 21,
+                            "titleRegex": "Foo",
+                        }
+                    ]
+                }
+            )
+            test_item = {
+                "feedId": 21,
+                "starred": True,
+                "title": "Foo: Bar",
+                "id": 234567,
+            }
+            caplog.set_level(logging.DEBUG)
+            assert filter_config.is_filter_matching_item(test_item) is False  # type: ignore
+            assert str(test_item["id"]) in caplog.text
+
         def test_no_filter_is_matching(
             self,
         ):
@@ -83,34 +105,64 @@ class TestFilterConfig:
                     ]
                 }
             )
-            assert filter_config.is_filter_matching_item({"feedId": 21}) is False  # type: ignore
+            assert (
+                filter_config.is_filter_matching_item({"feedId": 21, "starred": False})  # type: ignore
+                is False
+            )
 
         def test_skipped_item_returns_False(self, filter_config: FilterConfig):
             filter_config._feeds_to_skip = [21]
-            assert filter_config.is_filter_matching_item({"feedId": 21}) is False  # type: ignore
+            assert (
+                filter_config.is_filter_matching_item({"feedId": 21, "starred": False})  # type: ignore
+                is False
+            )
 
         @pytest.mark.parametrize(
             "filter,item",
             [
                 (
                     [{"name": "feed older > 20 Days", "feedId": 123, "hoursAge": 504}],
-                    {"feedId": 123, "pubDate": 0, "id": 22, "title": "Hello"},
+                    {
+                        "feedId": 123,
+                        "pubDate": 0,
+                        "id": 22,
+                        "title": "Hello",
+                        "starred": False,
+                    },
                 ),
                 (
                     [{"name": "every feed older > 1", "hoursAge": 24}],
-                    {"feedId": 6363, "pubDate": 0, "id": 22, "title": "Hello"},
+                    {
+                        "feedId": 6363,
+                        "pubDate": 0,
+                        "id": 22,
+                        "title": "Hello",
+                        "starred": False,
+                    },
                 ),
                 (
                     [{"name": "title Regex starts with", "titleRegex": "Hello"}],
-                    {"feedId": 6363, "pubDate": 0, "id": 22, "title": "Hello"},
+                    {
+                        "feedId": 6363,
+                        "pubDate": 0,
+                        "id": 22,
+                        "title": "Hello",
+                        "starred": False,
+                    },
                 ),
                 (
-                    [{"name": "title Regex middle", "titleRegex": "World"}],
+                    [
+                        {
+                            "name": "title Regex middle",
+                            "titleRegex": "World",
+                        }
+                    ],
                     {
                         "feedId": 6363,
                         "pubDate": 0,
                         "id": 22,
                         "title": "Hello World, foo bar",
+                        "starred": False,
                     },
                 ),
                 (
@@ -125,6 +177,7 @@ class TestFilterConfig:
                         "pubDate": 0,
                         "id": 22,
                         "title": "Hello world",
+                        "starred": False,
                     },
                 ),
                 (
@@ -143,6 +196,7 @@ class TestFilterConfig:
                         "feedId": 3434,
                         "title": "Hello",
                         "body": "<p>World</p>",
+                        "starred": False,
                     },
                 ),
             ],
@@ -178,6 +232,7 @@ class TestFilterConfig:
                 "feedId": 3434,
                 "title": "Hello",
                 "body": "<p>World</p>",
+                "starred": False,
             }
 
             filter_config = FilterConfig(filter_json={"filter": filter})  # type: ignore
@@ -197,6 +252,7 @@ class TestFilterConfig:
                         "feedId": 3434,
                         "title": "Hello",
                         "body": "<p>World</p>",
+                        "starred": False,
                     },
                     True,
                 ),
@@ -206,6 +262,7 @@ class TestFilterConfig:
                         "feedId": 3434,
                         "title": "Hello",
                         "body": "<p>Friend</p>",
+                        "starred": False,
                     },
                     False,
                 ),

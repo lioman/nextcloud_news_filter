@@ -64,6 +64,9 @@ class FilterConfig:
         if item["feedId"] in self.feeds_to_skip:
             logging.debug(f'Skipped because {item["feedId"]}')
             return False
+        if item["starred"]:
+            logging.debug(f'Skipped because {item["id"]} is starred.')
+            return False
         for one_filter in self.filter:
             if (
                 (
