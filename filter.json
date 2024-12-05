@@ -58,7 +58,7 @@
     },
     {
       "name": "Not Interesting Topics: Assorted",
-      "titleRegex": "PlayStation \\d|Fitbit|Google Pixel Watch|(.)*Call of Duty|Sky und WOW|Xbox Game Pass|PlayStation VR2|Samsung Galaxy S25||PlayStation Plus|Amazon Visa"
+      "titleRegex": "PlayStation \\d|Fitbit|Google Pixel Watch|(.)*Call of Duty|Sky und WOW|Xbox Game Pass|PlayStation VR2|Samsung Galaxy S25|PlayStation Plus|Amazon Visa"
     },
     {
       "name": "Advertisements",
