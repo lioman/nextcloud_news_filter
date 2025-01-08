@@ -65,7 +65,7 @@
     {
       "name": "Zeit dpa",
       "feedId": 64,
-      "bodyRegex": "^.*a> None$"
+      "bodyRegex": "^.*a> None$|dpa-infocom, dpa"
     },
     {
       "name": "mobiflip topics",
