@@ -1,51 +1,49 @@
 {
-  "skipFeeds": [
-    1678, 1683, 1681, 1682, 1684, 1680, 1659, 1654, 1658, 1657, 1656, 1660, 1655
-  ],
+  "skipFeeds": [138, 94, 85, 88, 91, 82, 28, 144, 147, 150, 153, 156],
   "filter": [
     {
       "name": "heise",
-      "feedId": 1592,
+      "feedId": 16,
       "titleRegex": "heise\\+|heise\\-Angebot|TechStage|#heiseshow"
     },
     {
       "name": "g+",
-      "feedId": 1594,
+      "feedId": 19,
       "titleRegex": "\\(g\\+\\)"
     },
     {
       "name": "mobiflip > 20 Days",
-      "feedId": 1595,
+      "feedId": 22,
       "hoursAge": 504
     },
     {
       "name": "googlewatchblog > 20 Days",
-      "feedId": 1596,
+      "feedId": 25,
       "hoursAge": 480
     },
     {
       "name": "Zeit > 1 Tage",
-      "feedId": 1671,
+      "feedId": 64,
       "hoursAge": 24
     },
     {
       "name": "Golem > 20 Tage",
-      "feedId": 1594,
+      "feedId": 19,
       "hoursAge": 480
     },
     {
       "name": "heise > 20 Tage",
-      "feedId": 1592,
+      "feedId": 16,
       "hoursAge": 480
     },
     {
       "name": "heise Zusammenfassung",
-      "feedId": 1592,
+      "feedId": 16,
       "titleRegex": "^Montag:|^Dienstag:|^Mittwoch:|^Donnerstag:|^Freitag:"
     },
     {
       "name": "PV-magazin>20 Tage",
-      "feedId": 1591,
+      "feedId": 13,
       "hoursAge": 480
     },
     {
@@ -66,12 +64,12 @@
     },
     {
       "name": "Zeit dpa",
-      "feedId": 1671,
+      "feedId": 64,
       "bodyRegex": "^.*a> None$"
     },
     {
       "name": "mobiflip topics",
-      "feedId": 1595,
+      "feedId": 22,
       "titleRegex": "backflip|Jaguar|Amazon Fire TV|Apple Vision Pro|Amazon reduziert Echo"
     }
   ]
