@@ -39,7 +39,7 @@
     {
       "name": "heise Zusammenfassung",
       "feedId": 16,
-      "titleRegex": "^Montag:|^Dienstag:|^Mittwoch:|^Donnerstag:|^Freitag:"
+      "titleRegex": "^Montag:|^Dienstag:|^Mittwoch:|^Donnerstag:|^Freitag:|^Top \\d{1,2}:"
     },
     {
       "name": "PV-magazin>20 Tage",
@@ -60,7 +60,7 @@
     },
     {
       "name": "Advertisements",
-      "titleRegex": "DR\\.SIM|Mega SIM|klarmobil|ja! mobil|Mobilfunk\\-Tarif|Aldi Talk|CallYa|Anzeige:|Vodafone Smart|für \\d{1,3},\\d{2} (Euro|€)|Drillisch\\-Tarif|fraenk|SIMon|Edeka smart|Tchibo mobil"
+      "titleRegex": "DR\\.SIM|Mega SIM|klarmobil|ja! mobil|Mobilfunk\\-Tarif|Aldi Talk|CallYa|Anzeige:|Vodafone Smart|für \\d{1,3},\\d{2} (Euro|€)|Drillisch\\-Tarif|fraenk|SIMon|Edeka smart|Tchibo mobil|sim24"
     },
     {
       "name": "Zeit dpa",
