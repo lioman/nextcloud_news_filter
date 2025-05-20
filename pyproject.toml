@@ -6,7 +6,7 @@ authors = [{ name = "Lioman", email = "dev@lioman.de" }]
 dependencies = [
     "httpx[http2]>=0.27.0",
 ]
-requires-python = ">=3.10,<3.12"
+requires-python = ">=3.10,<3.13"
 readme = "README.md"
 license = { text = "GPL-3.0-later" }
 classifiers = [
@@ -52,6 +52,8 @@ type-check = "mypy ./src"
 
 [tool.pdm.version]
 source = "scm"
+tag_filter = "v*"
+version_format = "version:format_version"
 
 [tool.ruff]
 line-length = 88
