@@ -6,7 +6,7 @@ stages:
 
 image: python:3.12-bookworm
 before_script:
-  - pip install pdm
+  - pip install pdm>=2.23.1
 
 variables:
   SERVERLESS_RELEASE_FILE: nextcloud_news_filter-$CI_COMMIT_TAG.zip
@@ -53,11 +53,29 @@ build-scaleway-zip:
     - tags
     - main
 
+publish-package-testing:
+  stage: release
+  environment: testing
+  id_tokens:
+    TESTPYPI_ID_TOKEN:
+      aud: "testpypi"
+  script:
+    - pdm publish --repository testpypi
+  dependencies:
+    - test
+  rules:
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+    - when: manual
+      allow_failure: true
+
 publish-package:
   stage: release
   environment: production
+  id_tokens:
+    PYPI_ID_TOKEN:
+      aud: "pypi"
   script:
-    - pdm publish --username __token__
+    - pdm publish
   dependencies: []
   rules:
     - if: '$CI_COMMIT_TAG =~ /^v[0-9]+\.[0-9]\.[0-9]((a|b|c|rc)\d+)?$/'
